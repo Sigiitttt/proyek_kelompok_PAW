@@ -1,39 +1,39 @@
 <?php
 include "../koneksi.php";
 
-$aksi = $_GET['aksi'];
+// ============ TAMBAH BUKU ============
+if (isset($_POST['tambah'])) {
 
-// ===============================
-// TAMBAH BUKU
-// ===============================
-if ($aksi == "tambah") {
+    $judul = $_POST['judul'];
+    $penulis = $_POST['penulis'];
+    $id_kategori = $_POST['id_kategori'];
+    $id_rak = $_POST['id_rak'];
+    $stok = $_POST['stok'];
+    $isbn = $_POST['isbn'];
+    $tahun = $_POST['tahun_terbit'];
 
-    $query = "
-        INSERT INTO buku (judul, penulis, id_kategori, id_rak, stok, isbn, tahun_terbit)
-        VALUES (
-            '$_POST[judul]',
-            '$_POST[penulis]',
-            '$_POST[id_kategori]',
-            '$_POST[id_rak]',
-            '$_POST[stok]',
-            '$_POST[isbn]',
-            '$_POST[tahun_terbit]'
-        )
-    ";
+    mysqli_query($conn, "INSERT INTO buku VALUES(
+        '',
+        '$judul',
+        '$penulis',
+        '$id_kategori',
+        '$id_rak',
+        '$stok',
+        '$isbn',
+        '$tahun'
+    )");
 
-    mysqli_query($koneksi, $query);
     header("Location: list_buku.php");
+    exit;
 }
 
+// ============ EDIT BUKU ============
+if (isset($_POST['edit'])) {
 
+    $id = $_POST['id_buku'];
 
-// ===============================
-// EDIT BUKU
-// ===============================
-if ($aksi == "edit") {
-
-    $query = "
-        UPDATE buku SET 
+    mysqli_query($conn, 
+        "UPDATE buku SET
             judul='$_POST[judul]',
             penulis='$_POST[penulis]',
             id_kategori='$_POST[id_kategori]',
@@ -41,20 +41,21 @@ if ($aksi == "edit") {
             stok='$_POST[stok]',
             isbn='$_POST[isbn]',
             tahun_terbit='$_POST[tahun_terbit]'
-        WHERE id_buku='$_POST[id_buku]'
-    ";
+         WHERE id_buku='$id'"
+    );
 
-    mysqli_query($koneksi, $query);
     header("Location: list_buku.php");
+    exit;
 }
 
+// ============ HAPUS BUKU ============
+if (isset($_GET['hapus'])) {
+    $id = $_GET['hapus'];
 
+    mysqli_query($conn, "DELETE FROM buku WHERE id_buku='$id'");
 
-// ===============================
-// HAPUS BUKU
-// ===============================
-if ($aksi == "hapus") {
-
-    mysqli_query($koneksi, "DELETE FROM buku WHERE id_buku='$_GET[id]'");
     header("Location: list_buku.php");
+    exit;
 }
+
+?>

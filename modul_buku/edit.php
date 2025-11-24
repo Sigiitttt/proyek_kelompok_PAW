@@ -1,69 +1,76 @@
-<?php include "../sidebar.php"; ?>
-<?php include "../koneksi.php"; ?>
-
 <?php
+include "../sidebar.php";
+include "../koneksi.php";
+
 $id = $_GET['id'];
-$data = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM buku WHERE id_buku='$id'"));
+$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM buku WHERE id_buku='$id'"));
+
+$kategori = mysqli_query($conn, "SELECT * FROM kategori");
+$rak      = mysqli_query($conn, "SELECT * FROM rak");
 ?>
 
-<div class="container mt-4">
-    <h3>Edit Buku</h3>
+<div class="content">
+    <h3 class="mb-3">✏ Edit Buku</h3>
 
-    <form action="proses.php?aksi=edit" method="POST">
-        <input type="hidden" name="id_buku" value="<?= $data['id_buku'] ?>">
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-        <div class="mb-3">
-            <label>Judul Buku</label>
-            <input type="text" name="judul" class="form-control" value="<?= $data['judul'] ?>" required>
+            <form action="proses.php" method="post">
+                <input type="hidden" name="id_buku" value="<?= $data['id_buku'] ?>">
+
+                <div class="mb-3">
+                    <label>Judul Buku</label>
+                    <input type="text" name="judul" class="form-control" value="<?= $data['judul'] ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Penulis</label>
+                    <input type="text" name="penulis" class="form-control" value="<?= $data['penulis'] ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Kategori</label>
+                    <select name="id_kategori" class="form-control" required>
+                        <?php while ($k = mysqli_fetch_assoc($kategori)) { ?>
+                            <option value="<?= $k['id_kategori'] ?>" 
+                                <?= ($data['id_kategori'] == $k['id_kategori']) ? 'selected' : '' ?>>
+                                <?= $k['nama_kategori'] ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>Rak</label>
+                    <select name="id_rak" class="form-control" required>
+                        <?php while ($r = mysqli_fetch_assoc($rak)) { ?>
+                            <option value="<?= $r['id_rak'] ?>" 
+                                <?= ($data['id_rak'] == $r['id_rak']) ? 'selected' : '' ?>>
+                                <?= $r['kode_rak'] ?> (Lantai <?= $r['lantai'] ?>)
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>Stok</label>
+                    <input type="number" name="stok" class="form-control" value="<?= $data['stok'] ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label>ISBN</label>
+                    <input type="text" name="isbn" class="form-control" value="<?= $data['isbn'] ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label>Tahun Terbit</label>
+                    <input type="number" name="tahun_terbit" class="form-control" value="<?= $data['tahun_terbit'] ?>">
+                </div>
+
+                <button type="submit" name="edit" class="btn btn-warning">Update</button>
+                <a href="list_buku.php" class="btn btn-secondary">Kembali</a>
+            </form>
+
         </div>
-
-        <div class="mb-3">
-            <label>Penulis</label>
-            <input type="text" name="penulis" class="form-control" value="<?= $data['penulis'] ?>" required>
-        </div>
-
-        <div class="mb-3">
-            <label>Kategori</label>
-            <select name="id_kategori" class="form-select">
-                <?php
-                $q = mysqli_query($koneksi, "SELECT * FROM kategori");
-                while ($k = mysqli_fetch_assoc($q)) {
-                    $sel = ($k['id_kategori'] == $data['id_kategori']) ? "selected" : "";
-                    echo "<option value='$k[id_kategori]' $sel>$k[nama_kategori]</option>";
-                }
-                ?>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Lokasi Rak</label>
-            <select name="id_rak" class="form-select">
-                <?php
-                $q = mysqli_query($koneksi, "SELECT * FROM rak");
-                while ($r = mysqli_fetch_assoc($q)) {
-                    $sel = ($r['id_rak'] == $data['id_rak']) ? "selected" : "";
-                    echo "<option value='$r[id_rak]' $sel>$r[kode_rak] - Lantai $r[lantai]</option>";
-                }
-                ?>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Stok</label>
-            <input type="number" name="stok" class="form-control" value="<?= $data['stok'] ?>">
-        </div>
-
-        <div class="mb-3">
-            <label>ISBN</label>
-            <input type="text" name="isbn" class="form-control" value="<?= $data['isbn'] ?>">
-        </div>
-
-        <div class="mb-3">
-            <label>Tahun Terbit</label>
-            <input type="number" name="tahun_terbit" class="form-control" value="<?= $data['tahun_terbit'] ?>">
-        </div>
-
-        <button class="btn btn-success">Update</button>
-        <a href="list_buku.php" class="btn btn-secondary">Kembali</a>
-    </form>
+    </div>
 </div>

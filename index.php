@@ -1,111 +1,95 @@
+<!-- index.php -->
 <?php
-// index.php - Dashboard Admin
-include 'sidebar.php';
+include "sidebar.php"; 
+include "koneksi.php"; // file koneksi database
+
+// Hitung total buku
+$total_buku = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM buku"))['total'];
+
+// Hitung peminjaman aktif
+$peminjaman_aktif = mysqli_fetch_assoc(mysqli_query($conn, 
+    "SELECT COUNT(*) AS total FROM peminjaman WHERE status = 'dipinjam'"
+))['total'];
+
+// Hitung peminjam terlambat
+$telat = mysqli_fetch_assoc(mysqli_query($conn, 
+    "SELECT COUNT(*) AS total FROM peminjaman WHERE status = 'terlambat'"
+))['total'];
+
+// Hitung total ebook
+$total_ebook = mysqli_fetch_assoc(mysqli_query($conn, 
+    "SELECT COUNT(*) AS total FROM ebook"
+))['total'];
 ?>
+
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .card {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .card-body {
+            background: white;
+            border-left: 7px solid #2f3542;
+        }
+
+        h3 {
+            font-weight: bold;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-2 p-0">
-            <?php include 'sidebar.php'; ?>
-        </div>
+<div class="content">
+    <h3 class="mb-4">Dashboard Admin</h3>
 
-        <!-- Content -->
-        <div class="col-10 p-4">
-            <h2>Dashboard Admin</h2>
-            <hr>
+    <div class="row g-4">
 
-            <!-- Card Statistik -->
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body text-center">
-                            <h3 class="text-primary">120</h3>
-                            <p>Total Buku</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body text-center">
-                            <h3 class="text-success">35</h3>
-                            <p>Buku Dipinjam</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body text-center">
-                            <h3 class="text-warning">4</h3>
-                            <p>Buku Terlambat</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body text-center">
-                            <h3 class="text-danger">2</h3>
-                            <p>Denda Belum Dibayar</p>
-                        </div>
-                    </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Total Buku</h5>
+                    <h2><?= $total_buku ?></h2>
                 </div>
             </div>
+        </div>
 
-            <hr class="mt-4">
-
-            <!-- Tabel Riwayat Terbaru -->
-            <h4>Riwayat Peminjaman Terbaru</h4>
-            <div class="card border-0 shadow-sm mt-3">
-                <div class="card-body p-0">
-                    <table class="table table-striped mb-0">
-                        <thead>
-                            <tr>
-                                <th>Mahasiswa</th>
-                                <th>Judul Buku</th>
-                                <th>Tanggal Pinjam</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Ahmad Rizki</td>
-                                <td>Pemrograman Web</td>
-                                <td>2025-02-10</td>
-                                <td><span class="badge bg-success">Dipinjam</span></td>
-                            </tr>
-                            <tr>
-                                <td>Budi Santoso</td>
-                                <td>Basis Data</td>
-                                <td>2025-02-08</td>
-                                <td><span class="badge bg-warning">Terlambat</span></td>
-                            </tr>
-                            <tr>
-                                <td>Siti Aisyah</td>
-                                <td>Data Mining</td>
-                                <td>2025-02-05</td>
-                                <td><span class="badge bg-secondary">Dikembalikan</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Peminjaman Aktif</h5>
+                    <h2><?= $peminjaman_aktif ?></h2>
                 </div>
             </div>
-
         </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Peminjaman Terlambat</h5>
+                    <h2><?= $telat ?></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Total E-Book</h5>
+                    <h2><?= $total_ebook ?></h2>
+                </div>
+            </div>
+        </div>
+
     </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
